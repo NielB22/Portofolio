@@ -29,7 +29,10 @@ const { title = `${profile.name} — ${profile.role}`, description = profile.tag
 		<meta property="og:description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<script is:inline>document.documentElement.classList.add('js');</script>
+		<script is:inline>
+			document.documentElement.classList.add('js');
+			setTimeout(() => document.documentElement.classList.add('hero-safe'), 3000);
+		</script>
 	</head>
 	<body class="font-sans antialiased">
 		<slot />

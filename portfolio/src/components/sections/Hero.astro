@@ -1,58 +1,104 @@
 ---
 import Contours from '../Contours.astro';
 import Eyebrow from '../Eyebrow.astro';
-import { profile } from '../../data/profile';
+import { profile, about } from '../../data/profile';
+
+// Garis bantu layout: ubah ke false untuk menyembunyikan
+const debugLayout = false;
 
 const [first, ...rest] = profile.name.split(' ');
-const initials = profile.name
-	.split(' ')
-	.map((w) => w[0])
-	.slice(0, 2)
-	.join('');
+const school = about.education[0]?.school;
+
+const facts = [
+	{ label: 'Lokasi', value: profile.location },
+	...(school ? [{ label: 'Kampus', value: school }] : []),
+	{ label: 'Fokus', value: profile.focus },
+];
 ---
 
-<section id="top" class="relative overflow-hidden bg-cream text-ink">
-	<Contours class="absolute inset-0 h-full w-full text-sage/70" seed={3} />
+<!--
+	Hirarki: foto (blok gelap terbesar) → nama → peran & tagline → tombol → fakta singkat.
+	Latar 3D sengaja diredam dan ditutup gradasi krem di area teks agar teks tetap terbaca.
+-->
+<section id="top" class="relative isolate overflow-hidden bg-cream text-ink" data-debug-layout={debugLayout || undefined}>
+	<div class="absolute inset-0 -z-20" aria-hidden="true">
+		<Contours class="hero-fallback-bg absolute inset-0 h-full w-full text-sage/60" seed={3} />
+		<canvas id="hero-canvas" class="absolute inset-0 h-full w-full opacity-0"></canvas>
+	</div>
+	<div
+		class="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent_30%,var(--color-cream)_62%)] md:bg-[linear-gradient(90deg,transparent_30%,color-mix(in_oklab,var(--color-cream)_85%,transparent)_52%,var(--color-cream)_70%)]"
+		aria-hidden="true"
+	>
+	</div>
 
-	<div class="relative mx-auto max-w-7xl px-4 pb-12 pt-32 sm:px-8 sm:pt-40">
-		<Eyebrow class="text-moss">{profile.role} · {profile.location}</Eyebrow>
-
-		<div class="mt-6 grid items-end gap-8 md:grid-cols-[1fr_auto]">
-			<h1 class="uppercase leading-[0.86]">
-				<span class="block overflow-hidden pb-1">
-					<span class="animate-rise block font-display text-[clamp(3.25rem,11vw,9.5rem)]">{first}</span>
-				</span>
-				<span class="block overflow-hidden">
-					<span class="animate-rise wide block text-[clamp(2.25rem,8.6vw,8.5rem)] font-extrabold tracking-tight [animation-delay:120ms]">
-						{rest.join(' ')}
-					</span>
-				</span>
-			</h1>
-
-			<div class="relative w-fit justify-self-start md:justify-self-end">
+	<div
+		data-hero
+		class="mx-auto grid max-w-7xl items-center gap-10 px-4 pb-14 pt-24 sm:px-8 md:min-h-[min(100svh,980px)] md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14 md:pb-16 md:pt-28 lg:gap-20"
+	>
+		<!-- Foto -->
+		<figure class="relative mx-auto w-full max-w-[20rem] sm:max-w-[24rem] md:max-w-[85%]">
+			<div class="hero-photo-mask relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-ink [clip-path:inset(0%_0%_0%_0%_round_1.75rem)]">
 				{profile.avatar ? (
 					<img
 						src={profile.avatar}
-						alt={profile.name}
-						class="h-40 w-40 rounded-full object-cover grayscale sm:h-52 sm:w-52"
+						alt={`Foto ${profile.name}`}
+						class="hero-photo-inner h-full w-full object-cover"
+						width="1200"
+						height="1500"
+						fetchpriority="high"
 					/>
 				) : (
-					<div class="grid h-40 w-40 place-items-center rounded-full bg-ink font-display text-6xl text-lime sm:h-52 sm:w-52 sm:text-7xl">
-						{initials}
+					<div class="hero-photo-inner relative h-full w-full">
+						<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={9} />
+						<!-- Siluet sederhana sebagai penanda posisi wajah dan bahu -->
+						<svg
+							class="absolute inset-x-0 bottom-0 mx-auto w-[70%] text-sage/25"
+							viewBox="0 0 200 220"
+							fill="currentColor"
+							aria-hidden="true"
+						>
+							<circle cx="100" cy="72" r="44" />
+							<path d="M10 220c0-58 40-96 90-96s90 38 90 96z" />
+						</svg>
+						<p class="absolute inset-x-0 top-12 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-sage">
+							Foto kamu di sini
+							<span class="mt-1 block normal-case tracking-normal text-sage/70">4:5 · public/foto.jpg</span>
+						</p>
 					</div>
 				)}
-				{profile.status && (
-					<span class="absolute -right-3 top-2 rotate-6 rounded-md bg-lime px-3 py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-ink shadow-[3px_3px_0_var(--color-ink)]">
-						{profile.status}
-					</span>
-				)}
+
+				<!-- Penanda sudut ala viewfinder kamera -->
+				<span class="pointer-events-none absolute left-4 top-4 h-5 w-5 border-l-2 border-t-2 border-lime" aria-hidden="true"></span>
+				<span class="pointer-events-none absolute right-4 top-4 h-5 w-5 border-r-2 border-t-2 border-lime" aria-hidden="true"></span>
+				<span class="pointer-events-none absolute bottom-4 left-4 h-5 w-5 border-b-2 border-l-2 border-lime" aria-hidden="true"></span>
+				<span class="pointer-events-none absolute bottom-4 right-4 h-5 w-5 border-b-2 border-r-2 border-lime" aria-hidden="true"></span>
 			</div>
-		</div>
 
-		<div class="mt-12 grid gap-8 border-t border-ink/15 pt-8 md:grid-cols-[minmax(0,28rem)_1fr] md:items-end">
-			<p class="text-lg leading-relaxed text-ink/80">{profile.tagline}</p>
+			{profile.status && (
+				<figcaption class="hero-sticker absolute -right-3 bottom-10 rotate-[-4deg] rounded-md bg-lime px-3 py-2 font-mono text-[11px] font-medium uppercase tracking-wider text-ink shadow-[3px_3px_0_var(--color-ink)] sm:-right-5">
+					<span class="mr-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-ink align-middle"></span>
+					{profile.status}
+				</figcaption>
+			)}
+		</figure>
 
-			<div class="flex flex-wrap items-center gap-3 md:justify-end">
+		<!-- Teks -->
+		<div class="min-w-0">
+			<Eyebrow class="hero-fade text-moss">Halo, saya</Eyebrow>
+
+			<h1 class="mt-5 uppercase leading-[0.9]">
+				<span class="block overflow-hidden pb-1">
+					<span class="hero-line block font-display text-[clamp(2.75rem,6.2vw,5.75rem)]">{first}</span>
+				</span>
+				<span class="block overflow-hidden pb-1">
+					<span class="hero-line wide block text-[clamp(2.1rem,4.9vw,4.6rem)] font-extrabold tracking-tight">{rest.join(' ')}</span>
+				</span>
+			</h1>
+
+			<p class="hero-fade mt-6 text-xl font-semibold sm:text-2xl">{profile.role}</p>
+			<p class="hero-fade mt-3 max-w-[46ch] text-lg leading-relaxed text-ink/75">{profile.tagline}</p>
+
+			<div class="hero-fade mt-8 flex flex-wrap gap-3">
 				<a
 					href="#projects"
 					class="rounded-lg bg-ink px-5 py-3 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-lime hover:text-ink"
@@ -62,11 +108,72 @@ const initials = profile.name
 				<a
 					href={profile.cvUrl}
 					target="_blank"
-					class="rounded-lg px-5 py-3 text-xs font-bold uppercase tracking-wider ring-1 ring-ink/25 transition hover:bg-ink hover:text-cream"
+					class="rounded-lg bg-cream px-5 py-3 text-xs font-bold uppercase tracking-wider ring-1 ring-ink/25 transition hover:bg-ink hover:text-cream"
 				>
 					Download CV
 				</a>
 			</div>
+
+			<dl class="hero-fade mt-10 grid grid-cols-1 gap-4 border-t border-ink/15 pt-6 sm:grid-cols-3">
+				{facts.map((fact) => (
+					<div class="min-w-0">
+						<dt class="font-mono text-[11px] uppercase tracking-[0.18em] text-moss">{fact.label}</dt>
+						<dd class="mt-1 font-semibold">{fact.value}</dd>
+					</div>
+				))}
+			</dl>
 		</div>
 	</div>
 </section>
+
+<style is:global>
+	/* Garis bantu layout hero. Pakai outline (bukan border) agar ukuran elemen tidak berubah.
+	   Warna menandakan kedalaman: merah → biru → magenta → oranye → cyan. */
+	#top[data-debug-layout] div { outline: 2px solid #ff1f1f; outline-offset: -2px; }
+	#top[data-debug-layout] div div { outline-color: #1f5bff; }
+	#top[data-debug-layout] div div div { outline-color: #ff00d4; }
+	#top[data-debug-layout] div div div div { outline-color: #ff8a00; }
+	#top[data-debug-layout] div div div div div { outline-color: #00c8ff; }
+</style>
+
+<script>
+	import { gsap } from 'gsap';
+	import { initHeroScene } from '../../scripts/heroScene';
+
+	const mm = gsap.matchMedia();
+
+	mm.add(
+		{ motion: '(prefers-reduced-motion: no-preference)', reduce: '(prefers-reduced-motion: reduce)' },
+		(ctx) => {
+			if (ctx.conditions?.reduce) {
+				gsap.set('[data-hero]', { autoAlpha: 1 });
+				return;
+			}
+
+			gsap
+				.timeline({ defaults: { ease: 'power3.out' } })
+				.set('[data-hero]', { autoAlpha: 1 })
+				// 1. Foto terbuka dari bawah ke atas
+				.from('.hero-photo-mask', { clipPath: 'inset(100% 0% 0% 0% round 1.75rem)', duration: 1.1, ease: 'power4.inOut' })
+				.from('.hero-photo-inner', { scale: 1.18, duration: 1.5 }, '<')
+				// 2. Nama naik baris per baris
+				.from('.hero-line', { yPercent: 110, duration: 0.9, stagger: 0.1 }, '-=0.55')
+				// 3. Sisanya menyusul pelan
+				.from('.hero-fade', { y: 16, autoAlpha: 0, duration: 0.7, stagger: 0.07 }, '-=0.5')
+				.from('.hero-sticker', { scale: 0, rotate: -25, duration: 0.55, ease: 'back.out(2)' }, '-=0.45');
+		},
+	);
+
+	// Latar 3D dimuat setelah konten utama tampil agar teks tidak menunggu
+	const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;
+	const start = () =>
+		canvas &&
+		initHeroScene(canvas).then((ok) => {
+			if (!ok) return;
+			gsap.to(canvas, { opacity: 1, duration: 1.6, ease: 'power2.out' });
+			gsap.to('.hero-fallback-bg', { opacity: 0, duration: 1.6, ease: 'power2.out' });
+		});
+
+	if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1200 });
+	else setTimeout(start, 300);
+</script>

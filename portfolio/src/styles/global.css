@@ -15,16 +15,10 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --animate-marquee: marquee 45s linear infinite;
-  --animate-rise: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 
   @keyframes marquee {
     to {
       transform: translateX(-50%);
-    }
-  }
-  @keyframes rise {
-    from {
-      transform: translateY(105%);
     }
   }
 }
@@ -76,14 +70,18 @@ section[id] {
     opacity: 1;
     transform: none;
   }
+
+  /* Hero disembunyikan sampai GSAP memulai intro; .hero-safe memunculkannya bila JS gagal */
+  .js:not(.hero-safe) [data-hero] {
+    visibility: hidden;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .animate-marquee,
-  .animate-rise {
+  .animate-marquee {
     animation: none;
   }
 }

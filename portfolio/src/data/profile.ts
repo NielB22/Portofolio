@@ -3,12 +3,15 @@
 export const profile = {
   name: "Muhammad Daniel Azmi",
   role: "Mahasiswa Teknik Informatika",
-  tagline: "Tertarik pada web development, frontend, UI/UX, dan AI agents. Senang membangun hal yang berguna.",
+  tagline: "Tertarik pada web development, fullstack, UI/UX, dan AI agents. Senang membangun hal yang berguna.",
   location: "Indonesia",
   email: "danielarma321@gmail.com",
   cvUrl: "/cv.pdf", // taruh file cv.pdf di folder public/
-  avatar: "", // contoh: "/avatar.jpg" (taruh di public/). Kosongkan untuk inisial.
-  status: "Terbuka untuk magang", // tampil di stiker hero; kosongkan untuk menyembunyikan
+  // Foto potret rasio 4:5 (misal 1200x1500), taruh di public/ lalu isi: "/foto.jpg".
+  // Selama kosong, hero menampilkan bingkai placeholder.
+  avatar: "",
+  status: "Terbuka untuk magang", // tampil di stiker foto hero; kosongkan untuk menyembunyikan
+  focus: "Web · UI/UX · AI Agents",
   socials: [
     { label: "GitHub", url: "https://github.com/NielB22" },
     { label: "LinkedIn", url: "https://linkedin.com/in/username" },
@@ -19,19 +22,19 @@ export const profile = {
 export const about = {
   paragraphs: [
     "Halo! Saya mahasiswa Teknik Informatika semester 5 yang suka belajar teknologi baru dan mengerjakan proyek nyata.",
-    "Saat ini saya fokus mendalami pengembangan web full-stack dan sedang mencari kesempatan magang untuk mengembangkan kemampuan di lingkungan profesional.",
+    "Saat ini saya fokus mendalami pengembangan web full-stack dan ai agent pipeline dan sedang mencari kesempatan magang untuk mengembangkan kemampuan di lingkungan profesional.",
   ],
   education: [
     {
-      school: "Universitas Contoh",
+      school: "Universitas Multimedia Nusantara",
       degree: "S1 Teknik Informatika",
-      period: "2023 — Sekarang",
+      period: "2024 — Sekarang",
     },
   ],
   // Kata di dalam *bintang* tampil dengan huruf serif hijau neon
-  statement: "*Belajar* tanpa batas, *membangun* untuk berdampak.",
+  statement: "*Learning* as a rookie, *build* like production ready.",
   stats: [
-    { value: "3.80", unit: "/4.00", label: "IPK" },
+    { value: "3.63", unit: "/4.00", label: "IPK" },
     { value: "5", unit: "", label: "Semester" },
     { value: "12", unit: "+", label: "Repositori GitHub" },
     { value: "98", unit: "SKS", label: "SKS Lulus" },
@@ -39,13 +42,13 @@ export const about = {
 };
 
 // Teks berjalan di bawah hero; bergantian serif dan sans
-export const marquee = ["Web Development", "UI/UX", "AI Agents", "Frontend", "Open Source"];
+export const marquee = ["Web Development", "UI/UX", "AI Agents", "Fullstack"];
 
 export const skills = [
-  { category: "Bahasa Pemrograman", items: ["JavaScript", "TypeScript", "Python", "Java", "C++"] },
+  { category: "Bahasa Pemrograman", items: ["JavaScript", "TypeScript", "Python", "Kotlin", "C"] },
   { category: "Frontend", items: ["HTML", "CSS", "Tailwind CSS", "React", "Astro"] },
-  { category: "Backend & Database", items: ["Node.js", "Express", "Laravel", "MySQL", "PostgreSQL"] },
-  { category: "Tools", items: ["Git", "GitHub", "VS Code", "Figma", "Docker"] },
+  { category: "Backend & Database", items: ["Node.js", "Express", "Laravel", "MySQL"] },
+  { category: "Tools", items: ["Git", "GitHub", "VS Code", "Figma", "N8N", "Claude", "Gemini"] },
 ];
 
 export const projects = [

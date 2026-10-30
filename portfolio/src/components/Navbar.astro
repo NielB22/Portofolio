@@ -2,7 +2,7 @@
 import { profile, navLinks } from '../data/profile';
 
 const [first, ...rest] = profile.name.split(' ');
-const lastWord = rest.at(-1) ?? '';
+const middleName = rest[0] ?? '';
 ---
 
 <!-- Logo pakai mix-blend-difference agar terbaca di atas pita krem maupun gelap -->
@@ -12,7 +12,7 @@ const lastWord = rest.at(-1) ?? '';
 	aria-label="Kembali ke atas"
 >
 	<span class="block font-display text-lg sm:text-xl">{first}</span>
-	<span class="wide block text-lg font-extrabold tracking-tight sm:text-xl">{lastWord}</span>
+	<span class="wide block text-lg font-extrabold tracking-tight sm:text-xl">{middleName}</span>
 </a>
 
 <div class="fixed right-4 top-4 z-50 flex items-center gap-2 sm:right-8 sm:top-6">
