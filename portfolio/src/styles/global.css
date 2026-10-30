@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Layout: pita selang-seling krem / zaitun gelap, judul raksasa, garis kontur sebagai tekstur. */
+@theme {
+  --color-ink: #282c20;
+  --color-ink-soft: #343a26;
+  --color-cream: #f4f4ed;
+  --color-paper: #e9eadf;
+  --color-lime: #d2ff00;
+  --color-sage: #b4b8a5;
+  --color-moss: #5d6150;
+
+  --font-sans: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-rise: rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(105%);
+    }
+  }
+}
+
+/* Sans lebar untuk judul — ciri khas tipografi bergaya motorsport */
+@utility wide {
+  font-stretch: 115%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+section[id] {
+  scroll-margin-top: 4rem;
+}
+
+/* Elemen muncul saat di-scroll. Tanpa JS atau dengan reduced-motion, semua tetap terlihat. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-rise {
+    animation: none;
+  }
+}

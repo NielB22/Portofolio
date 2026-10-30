@@ -1,0 +1,17 @@
+---
+import { marquee } from '../data/profile';
+
+// Diulang dua kali agar animasi translateX(-50%) menyambung tanpa jeda
+const loop = [...marquee, ...marquee];
+---
+
+<div class="overflow-hidden border-y border-ink-soft bg-ink py-6 text-cream sm:py-8" aria-label={marquee.join(', ')}>
+	<ul class="animate-marquee flex w-max items-center gap-8 whitespace-nowrap text-[clamp(2.5rem,7vw,5.5rem)] uppercase leading-none sm:gap-12" aria-hidden="true">
+		{loop.map((word, i) => (
+			<li class="flex items-center gap-8 sm:gap-12">
+				<span class={i % 2 === 0 ? 'wide font-extrabold tracking-tight' : 'font-display text-lime'}>{word}</span>
+				<span class="h-3 w-3 rotate-45 bg-lime sm:h-4 sm:w-4"></span>
+			</li>
+		))}
+	</ul>
+</div>

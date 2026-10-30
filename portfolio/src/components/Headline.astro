@@ -1,0 +1,22 @@
+---
+// Judul campuran: kata di dalam *bintang* tampil dengan serif (miring opsional), sisanya sans lebar tebal.
+interface Props {
+	text: string;
+	as?: 'h1' | 'h2' | 'p';
+	class?: string;
+	emClass?: string;
+}
+
+const { text, as: Tag = 'h2', class: className = '', emClass = '' } = Astro.props;
+const parts = text.split('*').map((value, i) => ({ value, em: i % 2 === 1 }));
+---
+
+<Tag class={`uppercase leading-[0.9] ${className}`}>
+	{parts.map((p) =>
+		p.em ? (
+			<span class={`font-display font-normal ${emClass}`}>{p.value}</span>
+		) : (
+			<span class="wide font-extrabold tracking-tight">{p.value}</span>
+		),
+	)}
+</Tag>

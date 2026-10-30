@@ -1,0 +1,86 @@
+---
+import { profile, navLinks } from '../data/profile';
+
+const [first, ...rest] = profile.name.split(' ');
+const lastWord = rest.at(-1) ?? '';
+---
+
+<!-- Logo pakai mix-blend-difference agar terbaca di atas pita krem maupun gelap -->
+<a
+	href="#top"
+	class="fixed left-4 top-4 z-50 leading-[0.85] text-white uppercase mix-blend-difference sm:left-8 sm:top-6"
+	aria-label="Kembali ke atas"
+>
+	<span class="block font-display text-lg sm:text-xl">{first}</span>
+	<span class="wide block text-lg font-extrabold tracking-tight sm:text-xl">{lastWord}</span>
+</a>
+
+<div class="fixed right-4 top-4 z-50 flex items-center gap-2 sm:right-8 sm:top-6">
+	<a
+		href="#contact"
+		class="hidden rounded-lg bg-lime px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-ink transition hover:bg-cream sm:inline-block"
+	>
+		Hubungi Saya
+	</a>
+	<button
+		id="menu-toggle"
+		class="grid h-10 w-10 place-items-center rounded-lg bg-cream text-ink ring-1 ring-ink/15 transition hover:bg-lime"
+		aria-label="Buka menu"
+		aria-expanded="false"
+		aria-controls="menu-overlay"
+	>
+		<span class="flex w-4 flex-col gap-1">
+			<span class="h-0.5 w-full bg-current"></span>
+			<span class="h-0.5 w-2/3 self-end bg-current"></span>
+		</span>
+	</button>
+</div>
+
+<nav
+	id="menu-overlay"
+	class="pointer-events-none fixed inset-0 z-40 flex flex-col justify-between bg-ink px-4 pb-8 pt-28 text-cream opacity-0 transition-opacity duration-500 sm:px-8"
+	aria-label="Navigasi utama"
+	inert
+>
+	<ul class="flex flex-col gap-1">
+		{navLinks.map((link) => (
+			<li class="overflow-hidden">
+				<a
+					href={link.href}
+					class="menu-link group flex items-baseline gap-4 text-[clamp(2.5rem,9vw,6rem)] uppercase leading-[1] transition-colors hover:text-lime"
+				>
+					<span class="wide font-extrabold tracking-tight group-hover:hidden">{link.label}</span>
+					<span class="hidden font-display group-hover:inline">{link.label}</span>
+				</a>
+			</li>
+		))}
+	</ul>
+	<div class="flex flex-wrap items-end justify-between gap-4 font-mono text-xs uppercase tracking-[0.18em] text-sage">
+		<span>{profile.email}</span>
+		<ul class="flex gap-5">
+			{profile.socials.map((s) => (
+				<li><a href={s.url} target="_blank" rel="noopener" class="hover:text-lime">{s.label}</a></li>
+			))}
+		</ul>
+	</div>
+</nav>
+
+<script>
+	const toggle = document.getElementById('menu-toggle')!;
+	const overlay = document.getElementById('menu-overlay')!;
+
+	const setOpen = (open: boolean) => {
+		overlay.classList.toggle('opacity-0', !open);
+		overlay.classList.toggle('pointer-events-none', !open);
+		overlay.toggleAttribute('inert', !open);
+		toggle.setAttribute('aria-expanded', String(open));
+		toggle.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+		document.body.style.overflow = open ? 'hidden' : '';
+	};
+
+	toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+	overlay.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') setOpen(false);
+	});
+</script>

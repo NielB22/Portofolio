@@ -1,0 +1,83 @@
+---
+import Contours from '../Contours.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Headline from '../Headline.astro';
+import { profile } from '../../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<section id="contact" class="relative overflow-hidden bg-ink text-cream">
+	<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={5} />
+
+	<div class="relative mx-auto max-w-7xl px-4 pb-10 pt-24 sm:px-8 sm:pt-32">
+		<Eyebrow class="text-sage">Kontak</Eyebrow>
+		<Headline text="Mari *ngobrol*" class="mt-4 text-[clamp(3.25rem,13vw,11rem)]" emClass="text-lime" />
+
+		<div class="mt-12 grid gap-10 md:grid-cols-2 md:items-end">
+			<div>
+				<p class="max-w-md text-lg leading-relaxed text-cream/75">
+					Terbuka untuk magang, kolaborasi proyek, atau diskusi seputar teknologi.
+				</p>
+				<div class="mt-6 flex flex-wrap items-center gap-3">
+					<a
+						href={`mailto:${profile.email}`}
+						class="rounded-lg bg-lime px-5 py-3 text-xs font-bold uppercase tracking-wider text-ink transition hover:bg-cream"
+					>
+						Kirim Email
+					</a>
+					<button
+						id="copy-email"
+						data-email={profile.email}
+						class="rounded-lg px-5 py-3 font-mono text-xs ring-1 ring-cream/30 transition hover:ring-lime"
+					>
+						<span id="copy-label">{profile.email}</span>
+					</button>
+				</div>
+			</div>
+
+			<ul class="border-t border-cream/15">
+				{profile.socials.map((s) => (
+					<li>
+						<a
+							href={s.url}
+							target="_blank"
+							rel="noopener"
+							class="group flex items-center justify-between border-b border-cream/15 py-4 text-2xl uppercase transition-colors hover:text-lime"
+						>
+							<span class="wide font-extrabold tracking-tight group-hover:hidden">{s.label}</span>
+							<span class="hidden font-display group-hover:inline">{s.label}</span>
+							<span class="transition-transform group-hover:-rotate-45" aria-hidden="true">→</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</div>
+
+		<footer class="mt-24 flex flex-wrap justify-between gap-4 font-mono text-xs uppercase tracking-wider text-sage">
+			<p>&copy; {year} {profile.name}</p>
+			<p>Dibuat dengan Astro &amp; Tailwind CSS</p>
+			<a href="#top" class="hover:text-lime">Kembali ke atas ↑</a>
+		</footer>
+	</div>
+</section>
+
+<script>
+	const btn = document.getElementById('copy-email');
+	const label = document.getElementById('copy-label');
+
+	btn?.addEventListener('click', async () => {
+		const email = btn.dataset.email ?? '';
+		try {
+			await navigator.clipboard.writeText(email);
+			if (label) label.textContent = 'Email disalin';
+			setTimeout(() => label && (label.textContent = email), 1800);
+		} catch {
+			// Clipboard ditolak: biarkan pengguna menyalin manual
+			const range = document.createRange();
+			if (label) range.selectNodeContents(label);
+			window.getSelection()?.removeAllRanges();
+			window.getSelection()?.addRange(range);
+		}
+	});
+</script>

@@ -1,0 +1,52 @@
+---
+import Contours from '../Contours.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Headline from '../Headline.astro';
+import { about } from '../../data/profile';
+---
+
+<section id="about" class="relative overflow-hidden bg-ink text-cream">
+	<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={7} />
+
+	<div class="relative mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
+		<Eyebrow class="justify-center text-sage">Tentang Saya</Eyebrow>
+		<Headline
+			text={about.statement}
+			class="mx-auto mt-6 max-w-5xl text-center text-[clamp(2.25rem,6vw,5.5rem)]"
+			emClass="text-lime"
+		/>
+
+		<div class="mt-20 grid gap-12 md:grid-cols-2" data-reveal>
+			<div class="max-w-[60ch] space-y-5 text-lg leading-relaxed text-cream/80">
+				{about.paragraphs.map((p) => <p>{p}</p>)}
+			</div>
+
+			<div>
+				<p class="font-mono text-xs uppercase tracking-[0.18em] text-sage">Pendidikan</p>
+				<ul class="mt-4 divide-y divide-cream/10 border-y border-cream/10">
+					{about.education.map((edu) => (
+						<li class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-5">
+							<div>
+								<p class="text-xl font-semibold">{edu.school}</p>
+								<p class="text-cream/70">{edu.degree}</p>
+							</div>
+							<p class="font-mono text-xs uppercase tracking-wider text-lime">{edu.period}</p>
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+
+		<dl class="mt-16 grid grid-cols-2 border-t border-cream/10 md:grid-cols-4" data-reveal>
+			{about.stats.map((stat) => (
+				<div class="border-b border-cream/10 py-6 pr-4 md:border-b-0 md:border-r md:last:border-r-0 md:pl-6 md:first:pl-0">
+					<dt class="font-mono text-xs uppercase tracking-[0.18em] text-sage">{stat.label}</dt>
+					<dd class="mt-2 flex items-baseline gap-1 tabular-nums">
+						<span class="wide text-5xl font-extrabold tracking-tight sm:text-6xl">{stat.value}</span>
+						{stat.unit && <span class="font-display text-xl text-lime">{stat.unit}</span>}
+					</dd>
+				</div>
+			))}
+		</dl>
+	</div>
+</section>

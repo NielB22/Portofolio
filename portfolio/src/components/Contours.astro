@@ -1,0 +1,44 @@
+---
+// Garis kontur topografi dekoratif, dihitung saat build (tanpa JS di browser).
+interface Props {
+	class?: string;
+	seed?: number;
+}
+
+const { class: className = '', seed = 1 } = Astro.props;
+
+const rand = (n: number) => {
+	const x = Math.sin(n * 9301 + seed * 49297) * 233280;
+	return x - Math.floor(x);
+};
+
+const centers = Array.from({ length: 3 }, (_, i) => ({
+	x: 100 + rand(i + 1) * 1000,
+	y: 80 + rand(i + 20) * 540,
+}));
+
+const paths: string[] = [];
+centers.forEach((c, ci) => {
+	for (let k = 1; k <= 7; k++) {
+		const r = k * 42;
+		const pts: string[] = [];
+		for (let j = 0; j <= 96; j++) {
+			const a = (j / 96) * Math.PI * 2;
+			const wobble = 1 + 0.2 * Math.sin(a * 3 + ci * 2 + k * 0.35) + 0.07 * Math.sin(a * 5 + seed);
+			pts.push(`${(c.x + Math.cos(a) * r * wobble * 1.35).toFixed(1)} ${(c.y + Math.sin(a) * r * wobble).toFixed(1)}`);
+		}
+		paths.push(`M${pts.join('L')}Z`);
+	}
+});
+---
+
+<svg
+	class={`pointer-events-none ${className}`}
+	viewBox="0 0 1200 700"
+	preserveAspectRatio="xMidYMid slice"
+	fill="none"
+	stroke="currentColor"
+	aria-hidden="true"
+>
+	{paths.map((d) => <path d={d} stroke-width="1" vector-effect="non-scaling-stroke" />)}
+</svg>

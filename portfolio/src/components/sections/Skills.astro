@@ -1,0 +1,32 @@
+---
+import Eyebrow from '../Eyebrow.astro';
+import Headline from '../Headline.astro';
+import { skills } from '../../data/profile';
+---
+
+<section id="skills" class="bg-cream text-ink">
+	<div class="mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
+		<div class="flex flex-wrap items-end justify-between gap-6">
+			<div>
+				<Eyebrow class="text-moss">Skill &amp; Teknologi</Eyebrow>
+				<Headline text="Alat *tempur*" class="mt-4 text-[clamp(2.75rem,8vw,7rem)]" />
+			</div>
+			<p class="max-w-xs text-ink/70">Bahasa, framework, dan tools yang saya pakai untuk kuliah dan proyek pribadi.</p>
+		</div>
+
+		<ul class="mt-14 border-t border-ink/15">
+			{skills.map((group) => (
+				<li class="grid gap-4 border-b border-ink/15 py-6 md:grid-cols-[16rem_1fr] md:items-center" data-reveal>
+					<h3 class="font-mono text-xs uppercase tracking-[0.18em] text-moss">{group.category}</h3>
+					<ul class="flex flex-wrap gap-2">
+						{group.items.map((item) => (
+							<li class="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-ink/20 transition hover:bg-lime hover:ring-lime">
+								{item}
+							</li>
+						))}
+					</ul>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>

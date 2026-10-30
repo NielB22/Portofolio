@@ -1,0 +1,28 @@
+---
+import Contours from '../Contours.astro';
+import Eyebrow from '../Eyebrow.astro';
+import Headline from '../Headline.astro';
+import { experiences } from '../../data/profile';
+---
+
+<section id="experience" class="relative overflow-hidden bg-paper text-ink">
+	<Contours class="absolute inset-0 h-full w-full text-sage/50" seed={11} />
+
+	<div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-8 sm:py-32 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
+		<div class="md:sticky md:top-28 md:self-start">
+			<Eyebrow class="text-moss">Pengalaman &amp; Organisasi</Eyebrow>
+			<Headline text="Di luar *kelas*" class="mt-4 text-[clamp(2.75rem,7vw,6rem)]" />
+		</div>
+
+		<ol class="border-t border-ink/15">
+			{experiences.map((exp) => (
+				<li class="grid gap-2 border-b border-ink/15 py-8" data-reveal>
+					<p class="font-mono text-xs uppercase tracking-wider text-moss">{exp.period}</p>
+					<h3 class="text-2xl font-bold leading-snug">{exp.title}</h3>
+					<p class="w-fit bg-lime px-1.5 text-sm font-semibold">{exp.org}</p>
+					<p class="mt-2 max-w-[60ch] leading-relaxed text-ink/75">{exp.description}</p>
+				</li>
+			))}
+		</ol>
+	</div>
+</section>

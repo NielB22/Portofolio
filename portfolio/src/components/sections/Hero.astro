@@ -1,0 +1,72 @@
+---
+import Contours from '../Contours.astro';
+import Eyebrow from '../Eyebrow.astro';
+import { profile } from '../../data/profile';
+
+const [first, ...rest] = profile.name.split(' ');
+const initials = profile.name
+	.split(' ')
+	.map((w) => w[0])
+	.slice(0, 2)
+	.join('');
+---
+
+<section id="top" class="relative overflow-hidden bg-cream text-ink">
+	<Contours class="absolute inset-0 h-full w-full text-sage/70" seed={3} />
+
+	<div class="relative mx-auto max-w-7xl px-4 pb-12 pt-32 sm:px-8 sm:pt-40">
+		<Eyebrow class="text-moss">{profile.role} · {profile.location}</Eyebrow>
+
+		<div class="mt-6 grid items-end gap-8 md:grid-cols-[1fr_auto]">
+			<h1 class="uppercase leading-[0.86]">
+				<span class="block overflow-hidden pb-1">
+					<span class="animate-rise block font-display text-[clamp(3.25rem,11vw,9.5rem)]">{first}</span>
+				</span>
+				<span class="block overflow-hidden">
+					<span class="animate-rise wide block text-[clamp(2.25rem,8.6vw,8.5rem)] font-extrabold tracking-tight [animation-delay:120ms]">
+						{rest.join(' ')}
+					</span>
+				</span>
+			</h1>
+
+			<div class="relative w-fit justify-self-start md:justify-self-end">
+				{profile.avatar ? (
+					<img
+						src={profile.avatar}
+						alt={profile.name}
+						class="h-40 w-40 rounded-full object-cover grayscale sm:h-52 sm:w-52"
+					/>
+				) : (
+					<div class="grid h-40 w-40 place-items-center rounded-full bg-ink font-display text-6xl text-lime sm:h-52 sm:w-52 sm:text-7xl">
+						{initials}
+					</div>
+				)}
+				{profile.status && (
+					<span class="absolute -right-3 top-2 rotate-6 rounded-md bg-lime px-3 py-1.5 font-mono text-[11px] font-medium uppercase tracking-wider text-ink shadow-[3px_3px_0_var(--color-ink)]">
+						{profile.status}
+					</span>
+				)}
+			</div>
+		</div>
+
+		<div class="mt-12 grid gap-8 border-t border-ink/15 pt-8 md:grid-cols-[minmax(0,28rem)_1fr] md:items-end">
+			<p class="text-lg leading-relaxed text-ink/80">{profile.tagline}</p>
+
+			<div class="flex flex-wrap items-center gap-3 md:justify-end">
+				<a
+					href="#projects"
+					class="rounded-lg bg-ink px-5 py-3 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-lime hover:text-ink"
+				>
+					Lihat Proyek
+				</a>
+				<a
+					href={profile.cvUrl}
+					target="_blank"
+					class="rounded-lg px-5 py-3 text-xs font-bold uppercase tracking-wider ring-1 ring-ink/25 transition hover:bg-ink hover:text-cream"
+				>
+					Download CV
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
