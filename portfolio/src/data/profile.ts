@@ -1,5 +1,9 @@
 // Semua isi portofolio ada di sini — cukup edit file ini untuk mengganti data.
 
+// Foto hero (PNG berlatar transparan, rasio 4:5). Urutan = urutan tampil saat berganti otomatis.
+import photo1 from "../assets/photos/foto-2.png";
+import photo2 from "../assets/photos/foto-1.png";
+
 export const profile = {
   name: "Muhammad Daniel Azmi",
   role: "Mahasiswa Teknik Informatika",
@@ -7,9 +11,10 @@ export const profile = {
   location: "Indonesia",
   email: "danielarma321@gmail.com",
   cvUrl: "/cv.pdf", // taruh file cv.pdf di folder public/
-  // Foto potret rasio 4:5 (misal 1200x1500), taruh di public/ lalu isi: "/foto.jpg".
-  // Selama kosong, hero menampilkan bingkai placeholder.
-  avatar: "",
+  // Foto disimpan di src/assets/photos/ agar otomatis dikompres Astro.
+  // Lebih dari satu foto → berganti otomatis. Kosongkan ([]) untuk bingkai placeholder.
+  photos: [photo1, photo2] as ImageMetadata[],
+  photoInterval: 5, // detik per foto
   status: "Terbuka untuk magang", // tampil di stiker foto hero; kosongkan untuk menyembunyikan
   focus: "Web · UI/UX · AI Agents",
   socials: [
@@ -51,6 +56,11 @@ export const skills = [
   { category: "Tools", items: ["Git", "GitHub", "VS Code", "Figma", "N8N", "Claude", "Gemini"] },
 ];
 
+// Logo untuk tampilan marquee di section Skill. Taruh file SVG/PNG di public/logos/ lalu
+// petakan nama skill ke path-nya, misal: "React": "/logos/react.svg".
+// Skill yang belum punya logo tampil sebagai placeholder (kotak inisial + nama).
+export const skillLogos: Record<string, string> = {};
+
 export const projects = [
   {
     title: "Sistem Informasi Perpustakaan",
@@ -80,18 +90,43 @@ export const projects = [
 
 export const experiences = [
   {
-    title: "Asisten Praktikum Algoritma & Pemrograman",
-    org: "Laboratorium Informatika",
-    period: "Feb 2025 — Jun 2025",
-    description: "Membimbing 40+ mahasiswa dalam praktikum dasar pemrograman C++ dan menilai tugas mingguan.",
+    title: "Garuda Hacks 7.0 Participants",
+    org: "Garuda Hacks 7.0",
+    period: "July 16-18 2026",
+    description: "Participated in Garuda Hacks 7.0, an AI-themed hackathon with over 200 participants from across Indonesia, focusing on making AI Automation pipeline with N8N.",
   },
   {
-    title: "Staf Divisi Teknologi",
-    org: "Himpunan Mahasiswa Informatika",
-    period: "2024 — 2025",
-    description: "Mengembangkan dan memelihara website himpunan serta membantu acara workshop internal.",
+    title: "Member of Website Division in PPIF 2026",
+    org: "Program Kerja Himpunan Mahasiswa Informatika UMN - PPIF 2026",
+    period: "March - August 2026",
+    description: "Member dari divisi website, acara untuk mahasiswa baru dalam perkenalan prodi informatika UMN, fokus di bagian UI/UX dan Frontend.",
   },
+  {
+    title: "Code the Future — GenDigital Academy AI Hackathon Winner",
+    org: "GenDigital Academy x Skystar Capital x Hacktiv8",
+    period: "May 2026",
+    description: "A national AI hackathon organized by GenDigital Academy in collaboration with Skystar Capital and Hacktiv8, with the theme 'AI for better Indonesia'. My team developed an innovative AI-powered solution that earned us the 1st place winner title.",
+  },
+  {
+    title: "Member of UMN Festival 2026 Committee",
+    org: "UMN Festival 2026 - Program Kerja BEM UMN",
+    period: "March - December 2026",
+    description: "UMN Festival 2026 adalah festival perayaan HUT Universitas Multimedia Nusantara di bawah naungan BEM UMN. Acara ini bertujuan mendorong partisipasi dan memperkuat solidaritas mahasiswa",
+  },
+  {
+    title: "Freelance Website Developer",
+    org: "SobatWeb",
+    period: "Jan - ... 2026",
+    description: "...",
+  },
+  
 ];
+
+// Footer: judul besar di kartu gelap (kata di *bintang* = serif hijau neon) dan tombol CTA
+export const footer = {
+  headline: "Always *learning*, keep *building*.",
+  cta: "Kirim Email",
+};
 
 export const navLinks = [
   { label: "Tentang", href: "#about" },

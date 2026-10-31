@@ -15,7 +15,26 @@ const middleName = rest[0] ?? '';
 	<span class="wide block text-lg font-extrabold tracking-tight sm:text-xl">{middleName}</span>
 </a>
 
-<div class="fixed right-4 top-4 z-50 flex items-center gap-2 sm:right-8 sm:top-6">
+<!--
+	Di hero (desktop): menu tampil mendatar. Setelah scroll melewati batas, menu memudar
+	dan tombol hamburger muncul — diatur lewat atribut data-compact di #nav-bar.
+	Di layar < lg selalu memakai hamburger.
+-->
+<div id="nav-bar" class="group fixed right-4 top-4 z-50 flex items-center gap-2 sm:right-8 sm:top-6">
+	<nav aria-label="Navigasi hero" class="hidden lg:block" id="nav-inline">
+		<ul class="flex h-10 items-center rounded-lg bg-cream/85 px-1 ring-1 ring-ink/15 backdrop-blur-sm transition duration-500 ease-out group-data-[compact]:pointer-events-none group-data-[compact]:-translate-y-2 group-data-[compact]:opacity-0 motion-reduce:transition-none">
+			{navLinks.map((link) => (
+				<li>
+					<a
+						href={link.href}
+						class="block rounded-md px-3 py-2 text-xs font-bold uppercase tracking-wider text-ink transition-colors hover:bg-lime"
+					>
+						{link.label}
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
 	<a
 		href="#contact"
 		class="hidden rounded-lg bg-lime px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-ink transition hover:bg-cream sm:inline-block"
@@ -24,7 +43,7 @@ const middleName = rest[0] ?? '';
 	</a>
 	<button
 		id="menu-toggle"
-		class="grid h-10 w-10 place-items-center rounded-lg bg-cream text-ink ring-1 ring-ink/15 transition hover:bg-lime"
+		class="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-cream text-ink ring-1 ring-ink/15 transition-all duration-500 ease-out hover:bg-lime motion-reduce:transition-none lg:-ml-2 lg:w-0 lg:scale-50 lg:opacity-0 lg:ring-0 lg:group-data-[compact]:ml-0 lg:group-data-[compact]:w-10 lg:group-data-[compact]:scale-100 lg:group-data-[compact]:opacity-100 lg:group-data-[compact]:ring-1"
 		aria-label="Buka menu"
 		aria-expanded="false"
 		aria-controls="menu-overlay"
@@ -83,4 +102,21 @@ const middleName = rest[0] ?? '';
 	document.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') setOpen(false);
 	});
+
+	// Batas scroll (px) sebelum menu mendatar berubah jadi hamburger
+	const COMPACT_AFTER = 80;
+	const bar = document.getElementById('nav-bar')!;
+	const inline = document.getElementById('nav-inline')!;
+	const desktop = window.matchMedia('(min-width: 64rem)');
+
+	const update = () => {
+		const compact = window.scrollY > COMPACT_AFTER;
+		bar.toggleAttribute('data-compact', compact);
+		inline.toggleAttribute('inert', compact);
+		// Hamburger tidak bisa difokus saat tersembunyi di hero (desktop)
+		toggle.toggleAttribute('inert', desktop.matches && !compact);
+	};
+	update();
+	window.addEventListener('scroll', update, { passive: true });
+	desktop.addEventListener('change', update);
 </script>

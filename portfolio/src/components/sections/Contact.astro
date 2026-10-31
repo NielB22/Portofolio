@@ -3,14 +3,12 @@ import Contours from '../Contours.astro';
 import Eyebrow from '../Eyebrow.astro';
 import Headline from '../Headline.astro';
 import { profile } from '../../data/profile';
-
-const year = new Date().getFullYear();
 ---
 
 <section id="contact" class="relative overflow-hidden bg-ink text-cream">
 	<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={5} />
 
-	<div class="relative mx-auto max-w-7xl px-4 pb-10 pt-24 sm:px-8 sm:pt-32">
+	<div class="relative mx-auto max-w-7xl px-4 pb-24 pt-24 sm:px-8 sm:pt-32">
 		<Eyebrow class="text-sage">Kontak</Eyebrow>
 		<Headline text="Mari *ngobrol*" class="mt-4 text-[clamp(3.25rem,13vw,11rem)]" emClass="text-lime" />
 
@@ -53,12 +51,6 @@ const year = new Date().getFullYear();
 				))}
 			</ul>
 		</div>
-
-		<footer class="mt-24 flex flex-wrap justify-between gap-4 font-mono text-xs uppercase tracking-wider text-sage">
-			<p>&copy; {year} {profile.name}</p>
-			<p>Dibuat dengan Astro &amp; Tailwind CSS</p>
-			<a href="#top" class="hover:text-lime">Kembali ke atas ↑</a>
-		</footer>
 	</div>
 </section>
 

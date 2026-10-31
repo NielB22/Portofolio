@@ -1,10 +1,16 @@
 ---
 import Contours from '../Contours.astro';
 import Eyebrow from '../Eyebrow.astro';
+import { Image } from 'astro:assets';
 import { profile, about } from '../../data/profile';
 
 // Garis bantu layout: ubah ke false untuk menyembunyikan
 const debugLayout = false;
+
+// Bentuk folder dalam koordinat 400×500 (rasio 4:5)
+const folderPath =
+	'M2 50Q2 26 26 26L104 26C118 26 122 2 138 2L262 2C278 2 282 26 296 26L374 26Q398 26 398 50' +
+	'L398 456Q398 480 374 480L352 480C338 480 334 498 320 498L80 498C66 498 62 480 48 480L26 480Q2 480 2 456Z';
 
 const [first, ...rest] = profile.name.split(' ');
 const school = about.education[0]?.school;
@@ -36,42 +42,64 @@ const facts = [
 		class="mx-auto grid max-w-7xl items-center gap-10 px-4 pb-14 pt-24 sm:px-8 md:min-h-[min(100svh,980px)] md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14 md:pb-16 md:pt-28 lg:gap-20"
 	>
 		<!-- Foto -->
-		<figure class="relative mx-auto w-full max-w-[20rem] sm:max-w-[24rem] md:max-w-[85%]">
-			<div class="hero-photo-mask relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-ink [clip-path:inset(0%_0%_0%_0%_round_1.75rem)]">
-				{profile.avatar ? (
-					<img
-						src={profile.avatar}
-						alt={`Foto ${profile.name}`}
-						class="hero-photo-inner h-full w-full object-cover"
-						width="1200"
-						height="1500"
-						fetchpriority="high"
-					/>
-				) : (
-					<div class="hero-photo-inner relative h-full w-full">
-						<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={9} />
-						<!-- Siluet sederhana sebagai penanda posisi wajah dan bahu -->
-						<svg
-							class="absolute inset-x-0 bottom-0 mx-auto w-[70%] text-sage/25"
-							viewBox="0 0 200 220"
-							fill="currentColor"
-							aria-hidden="true"
-						>
-							<circle cx="100" cy="72" r="44" />
-							<path d="M10 220c0-58 40-96 90-96s90 38 90 96z" />
-						</svg>
-						<p class="absolute inset-x-0 top-12 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-sage">
-							Foto kamu di sini
-							<span class="mt-1 block normal-case tracking-normal text-sage/70">4:5 · public/foto.jpg</span>
-						</p>
+		<figure
+			class="hero-figure relative mx-auto w-full max-w-[20rem] sm:max-w-[24rem] md:max-w-[85%]"
+			data-interval={profile.photoInterval}
+		>
+			<!--
+				Bingkai folder: tab menonjol di tengah atas, sudut bawah kiri-kanan sedikit naik.
+				Path yang sama dipakai untuk garis (tanpa isi) dan untuk memotong foto.
+			-->
+			<div class="relative aspect-[4/5]">
+				<svg class="absolute h-0 w-0" aria-hidden="true">
+					<clipPath id="hero-folder-clip" clipPathUnits="objectBoundingBox" transform="scale(0.0025 0.002)">
+						<path d={folderPath} />
+					</clipPath>
+				</svg>
+
+				<!-- Latar dalam folder: krem tipis untuk meredam garis 3D, pola titik, dan cahaya lime lembut di belakang kepala -->
+				<div class="absolute inset-0 [clip-path:url(#hero-folder-clip)]" aria-hidden="true">
+					<div class="absolute inset-0 bg-cream/75"></div>
+					<div class="absolute inset-0 bg-[radial-gradient(var(--color-sage)_1px,transparent_1.3px)] bg-[size:14px_14px] opacity-70"></div>
+					<div class="hero-photo-glow absolute left-[7.5%] top-[4%] aspect-square w-[85%] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-lime)_45%,transparent),transparent)]"></div>
+				</div>
+
+				{profile.photos.length > 0 ? (
+					<div class="hero-photo-stage absolute inset-0 [clip-path:url(#hero-folder-clip)]">
+						<!-- Foto sudah 4:5, jadi pas dengan folder. object-[50%_50%] = geser posisi bila perlu. -->
+						{profile.photos.map((photo, i) => (
+							<Image
+								src={photo}
+								alt={i === 0 ? `Foto ${profile.name}` : ''}
+								width={1200}
+								height={Math.round((1200 * photo.height) / photo.width)}
+								widths={[480, 720, 1000, 1200]}
+								sizes="(min-width: 768px) 40vw, 80vw"
+								format="webp"
+								quality={82}
+								loading={i === 0 ? 'eager' : 'lazy'}
+								fetchpriority={i === 0 ? 'high' : 'auto'}
+								class:list={['hero-photo absolute inset-0 h-full w-full object-cover object-[50%_50%]', i > 0 && 'invisible opacity-0']}
+							/>
+						))}
 					</div>
+				) : (
+					<p class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-moss">
+						Foto kamu di sini
+					</p>
 				)}
 
-				<!-- Penanda sudut ala viewfinder kamera -->
-				<span class="pointer-events-none absolute left-4 top-4 h-5 w-5 border-l-2 border-t-2 border-lime" aria-hidden="true"></span>
-				<span class="pointer-events-none absolute right-4 top-4 h-5 w-5 border-r-2 border-t-2 border-lime" aria-hidden="true"></span>
-				<span class="pointer-events-none absolute bottom-4 left-4 h-5 w-5 border-b-2 border-l-2 border-lime" aria-hidden="true"></span>
-				<span class="pointer-events-none absolute bottom-4 right-4 h-5 w-5 border-b-2 border-r-2 border-lime" aria-hidden="true"></span>
+				<svg
+					class="pointer-events-none absolute inset-0 h-full w-full overflow-visible text-ink"
+					viewBox="0 0 400 500"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path class="hero-folder-line" pathLength="1" d={folderPath} />
+				</svg>
 			</div>
 
 			{profile.status && (
@@ -127,6 +155,9 @@ const facts = [
 </section>
 
 <style is:global>
+	/* pathLength="1" + dasharray 1 → GSAP menggambar garis folder dengan menggeser dashoffset 1 → 0 */
+	.hero-folder-line { stroke-dasharray: 1; }
+
 	/* Garis bantu layout hero. Pakai outline (bukan border) agar ukuran elemen tidak berubah.
 	   Warna menandakan kedalaman: merah → biru → magenta → oranye → cyan. */
 	#top[data-debug-layout] div { outline: 2px solid #ff1f1f; outline-offset: -2px; }
@@ -140,6 +171,28 @@ const facts = [
 	import { gsap } from 'gsap';
 	import { initHeroScene } from '../../scripts/heroScene';
 
+	const figure = document.querySelector<HTMLElement>('.hero-figure');
+	const photos = gsap.utils.toArray<HTMLElement>('.hero-photo');
+	const counter = document.querySelector('[data-photo-index]');
+	const interval = Number(figure?.dataset.interval) || 5;
+
+	// Ganti foto otomatis: foto lama memudar ke atas, foto baru naik dari bawah
+	let current = 0;
+	const showNext = () => {
+		const next = (current + 1) % photos.length;
+		gsap
+			.timeline()
+			.to(photos[current], { autoAlpha: 0, yPercent: -3, duration: 0.6, ease: 'power2.in' })
+			.fromTo(photos[next], { autoAlpha: 0, yPercent: 5 }, { autoAlpha: 1, yPercent: 0, duration: 0.8, ease: 'power3.out' }, '-=0.25')
+			.fromTo('.hero-photo-glow', { scale: 0.85 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, '<');
+		current = next;
+		if (counter) counter.textContent = String(next + 1).padStart(2, '0');
+	};
+	const slideshow = gsap.delayedCall(interval, function tick() {
+		showNext();
+		slideshow.restart(true);
+	}).pause();
+
 	const mm = gsap.matchMedia();
 
 	mm.add(
@@ -151,18 +204,67 @@ const facts = [
 			}
 
 			gsap
-				.timeline({ defaults: { ease: 'power3.out' } })
+				.timeline({
+					defaults: { ease: 'power3.out' },
+					// Mulai berganti foto setelah intro selesai
+					onComplete: () => {
+						if (photos.length > 1) slideshow.restart(true);
+					},
+				})
 				.set('[data-hero]', { autoAlpha: 1 })
-				// 1. Foto terbuka dari bawah ke atas
-				.from('.hero-photo-mask', { clipPath: 'inset(100% 0% 0% 0% round 1.75rem)', duration: 1.1, ease: 'power4.inOut' })
-				.from('.hero-photo-inner', { scale: 1.18, duration: 1.5 }, '<')
+				// 1. Garis folder tergambar, lalu foto naik dari dalam folder
+				.from('.hero-folder-line', { strokeDashoffset: 1, duration: 1.2, ease: 'power2.inOut' })
+				.from(photos[0] ?? [], { yPercent: 10, autoAlpha: 0, duration: 1.1 }, '-=0.7')
 				// 2. Nama naik baris per baris
 				.from('.hero-line', { yPercent: 110, duration: 0.9, stagger: 0.1 }, '-=0.55')
 				// 3. Sisanya menyusul pelan
 				.from('.hero-fade', { y: 16, autoAlpha: 0, duration: 0.7, stagger: 0.07 }, '-=0.5')
 				.from('.hero-sticker', { scale: 0, rotate: -25, duration: 0.55, ease: 'back.out(2)' }, '-=0.45');
+
+			return () => slideshow.pause();
 		},
 	);
+
+	// Hover (hanya perangkat dengan mouse): folder sedikit miring mengikuti kursor,
+	// foto bergeser berlawanan arah (paralaks), dan pergantian foto berhenti sementara.
+	mm.add('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
+		if (!figure) return;
+		const frame = figure.firstElementChild as HTMLElement;
+		gsap.set(frame, { transformPerspective: 900 });
+
+		const tiltX = gsap.quickTo(frame, 'rotationX', { duration: 0.5, ease: 'power3.out' });
+		const tiltY = gsap.quickTo(frame, 'rotationY', { duration: 0.5, ease: 'power3.out' });
+		const shiftX = gsap.quickTo('.hero-photo-stage', 'x', { duration: 0.6, ease: 'power3.out' });
+
+		const onMove = (e: PointerEvent) => {
+			const r = figure.getBoundingClientRect();
+			const px = (e.clientX - r.left) / r.width - 0.5;
+			const py = (e.clientY - r.top) / r.height - 0.5;
+			tiltY(px * 6);
+			tiltX(-py * 6);
+			shiftX(-px * 10);
+		};
+		const onEnter = () => {
+			slideshow.pause();
+			gsap.to('.hero-photo-glow', { scale: 1.12, duration: 0.6, ease: 'power2.out' });
+		};
+		const onLeave = () => {
+			tiltX(0);
+			tiltY(0);
+			shiftX(0);
+			gsap.to('.hero-photo-glow', { scale: 1, duration: 0.6, ease: 'power2.out' });
+			if (photos.length > 1 && slideshow.paused()) slideshow.restart(true);
+		};
+
+		figure.addEventListener('pointermove', onMove);
+		figure.addEventListener('pointerenter', onEnter);
+		figure.addEventListener('pointerleave', onLeave);
+		return () => {
+			figure.removeEventListener('pointermove', onMove);
+			figure.removeEventListener('pointerenter', onEnter);
+			figure.removeEventListener('pointerleave', onLeave);
+		};
+	});
 
 	// Latar 3D dimuat setelah konten utama tampil agar teks tidak menunggu
 	const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement | null;

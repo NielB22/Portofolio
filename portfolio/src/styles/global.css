@@ -13,6 +13,7 @@
   --font-sans: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-script: "Caveat Brush", "Segoe Script", cursive;
 
   --animate-marquee: marquee 45s linear infinite;
 

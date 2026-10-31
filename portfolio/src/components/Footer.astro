@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import Contours from './Contours.astro';
+import Headline from './Headline.astro';
+import { profile, navLinks, footer, skills } from '../data/profile';
+
+const year = new Date().getFullYear();
+const photo = profile.photos[0];
+// Deretan nama tools di sisi kiri & kanan bawah kartu
+const tools = skills.flatMap((group) => group.items).slice(0, 8);
+const toolsLeft = tools.slice(0, 4);
+const toolsRight = tools.slice(4);
+const firstName = profile.name.split(' ').slice(1, 2)[0] ?? profile.name;
+---
+
+<!-- Pita krem → hijau neon, lalu kartu gelap dengan tab folder di tengah atas -->
+<footer class="relative bg-[linear-gradient(to_bottom,var(--color-cream)_0%,var(--color-cream)_10%,var(--color-lime)_55%)] px-2.5 pb-2.5 pt-20 text-ink sm:px-4 sm:pb-3">
+	<div class="text-center" data-reveal>
+		<p class="font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-tight">Ikuti {firstName} di media sosial</p>
+		<ul class="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-wider">
+			{profile.socials.map((s) => (
+				<li><a href={s.url} target="_blank" rel="noopener" class="transition-colors hover:text-moss">{s.label}</a></li>
+			))}
+		</ul>
+	</div>
+
+	<div class="relative mt-28 sm:mt-36">
+		<!-- Tab folder: bahu melengkung di kedua sisi, menyatu dengan tepi atas kartu -->
+		<svg
+			class="absolute bottom-full left-1/2 -mb-px h-auto w-[min(26rem,62%)] -translate-x-1/2 text-ink"
+			viewBox="0 0 420 34"
+			preserveAspectRatio="none"
+			aria-hidden="true"
+		>
+			<path
+				fill="currentColor"
+				d="M0 34 C22 34 30 30 38 20 L46 9 C52 3 58 0 70 0 L350 0 C362 0 368 3 374 9 L382 20 C390 30 398 34 420 34 Z"
+			/>
+		</svg>
+
+		<div class="relative flex min-h-[44rem] flex-col overflow-hidden rounded-[1.75rem] bg-ink text-cream sm:min-h-[46rem]">
+			<Contours class="absolute inset-0 h-full w-full text-ink-soft" seed={11} />
+
+			<!-- Judul besar + coretan garis neon -->
+			<div class="relative z-20 px-4 pt-20 text-center sm:pt-24">
+				<svg
+					class="pointer-events-none absolute left-1/2 top-6 h-24 w-40 -translate-x-[10%] text-lime sm:h-28"
+					viewBox="0 0 160 110"
+					fill="none"
+					aria-hidden="true"
+				>
+					<path d="M8 104 C 34 78, 70 44, 96 22 S 140 2, 152 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+				</svg>
+				<Headline
+					text={footer.headline}
+					as="p"
+					class="mx-auto max-w-3xl text-[clamp(2.25rem,5.5vw,4.75rem)]"
+					emClass="text-lime"
+				/>
+			</div>
+
+			<!-- Foto muncul dari tepi bawah kartu -->
+			<div class="pointer-events-none absolute -bottom-24 left-1/2 aspect-square w-[min(40rem,110%)] -translate-x-1/2 bg-[radial-gradient(closest-side,rgb(210_255_0/0.16),transparent)]" aria-hidden="true"></div>
+			{photo && (
+				<Image
+					src={photo}
+					alt=""
+					width={720}
+					class="pointer-events-none absolute bottom-0 left-1/2 z-10 h-auto w-[min(30rem,62%)] -translate-x-1/2 select-none sm:w-[min(30rem,40%)]"
+					loading="lazy"
+				/>
+			)}
+
+			<!-- Kolom kiri (halaman) & kanan (sosial) -->
+			<div class="relative z-20 mt-auto grid grid-cols-2 px-6 pb-[19rem] pt-16 sm:pb-40 md:px-[8%]">
+				<div class="text-center md:w-56">
+					<p class="font-mono text-[10px] uppercase tracking-[0.18em] text-sage">Halaman</p>
+					<ul class="mt-3 space-y-0.5">
+						{navLinks.map((link) => (
+							<li>
+								<a href={link.href} class="wide text-lg font-extrabold uppercase leading-tight tracking-tight transition-colors hover:text-lime sm:text-2xl">
+									{link.label}
+								</a>
+							</li>
+						))}
+					</ul>
+					<a href={profile.cvUrl} class="mt-5 inline-block text-xs font-bold uppercase tracking-wider text-lime hover:text-cream">Unduh CV</a>
+				</div>
+
+				<div class="justify-self-end text-center md:w-56">
+					<p class="font-mono text-[10px] uppercase tracking-[0.18em] text-sage">Ikuti di</p>
+					<ul class="mt-3 space-y-0.5">
+						{profile.socials.map((s) => (
+							<li>
+								<a href={s.url} target="_blank" rel="noopener" class="wide text-lg font-extrabold uppercase leading-tight tracking-tight transition-colors hover:text-lime sm:text-2xl">
+									{s.label}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			</div>
+
+			<!-- Baris bawah: tools kiri, CTA tengah, tools kanan -->
+			<div class="absolute inset-x-0 bottom-0 z-20 flex items-center justify-center gap-6 px-6 pb-6 xl:justify-between">
+				<ul class="hidden items-center gap-7 text-sm font-bold text-cream/60 xl:flex">
+					{toolsLeft.map((t) => <li>{t}</li>)}
+				</ul>
+				<a
+					href={`mailto:${profile.email}`}
+					class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-lime px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-ink transition hover:bg-cream"
+				>
+					{footer.cta}
+					<span aria-hidden="true">↗</span>
+				</a>
+				<ul class="hidden items-center gap-7 text-sm font-bold text-cream/60 xl:flex">
+					{toolsRight.map((t) => <li>{t}</li>)}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="flex flex-wrap items-center justify-between gap-3 px-2 pt-3 text-[10px] font-semibold uppercase tracking-wider">
+		<p>&copy; {year} {profile.name}. Hak cipta dilindungi</p>
+		<div class="flex gap-5">
+			<span>Dibuat dengan Astro &amp; Tailwind</span>
+			<a href="#top" class="hover:text-moss">Kembali ke atas ↑</a>
+		</div>
+	</div>
+</footer>

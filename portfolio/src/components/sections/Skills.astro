@@ -1,26 +1,91 @@
 ---
 import Eyebrow from '../Eyebrow.astro';
 import Headline from '../Headline.astro';
-import { skills } from '../../data/profile';
+import { skills, skillLogos } from '../../data/profile';
+
+const tools = skills.flatMap((group) => group.items);
+// Diulang dua kali agar animasi translateX(-50%) menyambung tanpa jeda
+const loop = [...tools, ...tools];
+
+const initials = (name: string) =>
+	name
+		.replace(/[^A-Za-z0-9 ]/g, ' ')
+		.split(' ')
+		.filter(Boolean)
+		.map((w) => w[0])
+		.join('')
+		.slice(0, 2)
+		.toUpperCase();
 ---
 
-<section id="skills" class="bg-cream text-ink">
-	<div class="mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
+<section id="skills" class="relative overflow-hidden bg-cream text-ink">
+	<!-- Coretan kuas besar di belakang judul -->
+	<p
+		class="pointer-events-none absolute left-[22%] top-28 z-0 -rotate-[14deg] select-none font-script text-[clamp(9rem,30vw,26rem)] leading-none text-lime"
+		aria-hidden="true"
+	>
+		Stack
+	</p>
+
+	<div class="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-8 sm:py-32">
 		<div class="flex flex-wrap items-end justify-between gap-6">
 			<div>
 				<Eyebrow class="text-moss">Skill &amp; Teknologi</Eyebrow>
 				<Headline text="Developing *Tools*" class="mt-4 text-[clamp(2.75rem,8vw,7rem)]" />
 			</div>
-			<p class="max-w-xs text-ink/70">Bahasa, framework, dan tools yang saya pakai untuk kuliah dan proyek pribadi.</p>
+			<div class="flex max-w-xs flex-col items-start gap-5">
+				<p class="text-ink/70">Bahasa, framework, dan tools yang saya pakai untuk kuliah dan proyek pribadi.</p>
+				<div class="inline-flex rounded-lg bg-cream p-1 ring-1 ring-ink/15" role="group" aria-label="Pilih tampilan skill">
+					<button
+						type="button"
+						data-skills-toggle="logos"
+						aria-pressed="true"
+						class="rounded-md px-4 py-2 font-mono text-xs uppercase tracking-wider transition aria-pressed:bg-ink aria-pressed:text-cream"
+					>
+						Logo
+					</button>
+					<button
+						type="button"
+						data-skills-toggle="list"
+						aria-pressed="false"
+						class="rounded-md px-4 py-2 font-mono text-xs uppercase tracking-wider transition aria-pressed:bg-ink aria-pressed:text-cream"
+					>
+						Daftar
+					</button>
+				</div>
+			</div>
 		</div>
 
-		<ul class="mt-14 border-t border-ink/15">
+		<!-- Tampilan 1 (default): marquee logo -->
+		<div data-skills-view="logos" class="mt-20 sm:mt-28">
+			<div class="group overflow-hidden py-4 [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
+				<ul class="animate-marquee flex w-max items-center gap-16 [animation-duration:60s] group-hover:[animation-play-state:paused] sm:gap-24">
+					{loop.map((name, i) => (
+						<li class="flex shrink-0 items-center gap-3 text-ink/75 transition-colors hover:text-ink" aria-hidden={i >= tools.length ? 'true' : undefined}>
+							{skillLogos[name] ? (
+								<img src={skillLogos[name]} alt={name} class="h-9 w-auto" loading="lazy" />
+							) : (
+								<>
+									<span class="grid h-10 w-10 place-items-center rounded-lg border-2 border-dashed border-current font-mono text-xs font-bold">
+										{initials(name)}
+									</span>
+									<span class="wide text-2xl font-extrabold tracking-tight">{name}</span>
+								</>
+							)}
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+
+		<!-- Tampilan 2: daftar per kategori -->
+		<ul data-skills-view="list" class="mt-14 border-t border-ink/15" hidden>
 			{skills.map((group) => (
-				<li class="grid gap-4 border-b border-ink/15 py-6 md:grid-cols-[16rem_1fr] md:items-center" data-reveal>
+				<li class="grid gap-4 border-b border-ink/15 py-6 md:grid-cols-[16rem_1fr] md:items-center">
 					<h3 class="font-mono text-xs uppercase tracking-[0.18em] text-moss">{group.category}</h3>
 					<ul class="flex flex-wrap gap-2">
 						{group.items.map((item) => (
-							<li class="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-ink/20 transition hover:bg-lime hover:ring-lime">
+							<li class="rounded-full bg-cream px-4 py-2 text-sm font-semibold ring-1 ring-ink/20 transition hover:bg-lime hover:ring-lime">
 								{item}
 							</li>
 						))}
@@ -30,3 +95,25 @@ import { skills } from '../../data/profile';
 		</ul>
 	</div>
 </section>
+
+<script>
+	import { gsap } from 'gsap';
+
+	const buttons = document.querySelectorAll<HTMLButtonElement>('[data-skills-toggle]');
+	const views = document.querySelectorAll<HTMLElement>('[data-skills-view]');
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	buttons.forEach((btn) =>
+		btn.addEventListener('click', () => {
+			const target = btn.dataset.skillsToggle;
+			if (btn.getAttribute('aria-pressed') === 'true') return;
+
+			buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+			views.forEach((view) => {
+				const show = view.dataset.skillsView === target;
+				view.hidden = !show;
+				if (show && !reduceMotion) gsap.fromTo(view, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+			});
+		}),
+	);
+</script>
